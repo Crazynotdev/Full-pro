@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>WAZ MOI • Envoyer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="box">
+    <h2>Envoie un message à <span id="to"></span></h2>
+    <textarea id="msg" placeholder="Ton message"></textarea>
+    <button id="send">Envoyer</button>
+  </div>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const to = params.get('user');
+    document.getElementById('to').innerText = to;
+    document.getElementById('send').onclick = async () => {
+      const msg = document.getElementById('msg').value.trim();
+      if (!msg) return alert('Message vide');
+      const res = await fetch('/api/send', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ to, message: msg })
+      });
+      const j = await res.json();
+      if (j.success) location.href = 'success.html';
+      else alert('Erreur');
+    };
+  </script>
+</body>
+</html>
