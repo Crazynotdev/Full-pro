@@ -1,31 +1,48 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" >
 <head>
-  <meta charset="UTF-8">
-  <title>WAZ MOI • Envoyer</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WAZ MOI • Envoyer un message</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="box">
-    <h2>Envoie un message à <span id="to"></span></h2>
-    <textarea id="msg" placeholder="Ton message"></textarea>
+  <main class="container" role="main" aria-label="Envoyer un message anonyme">
+    <h2>Envoyer un message à <span id="to"></span></h2>
+    <textarea
+      id="msg"
+      placeholder="Écris ton message ici..."
+      aria-label="Message anonyme"
+      rows="6"
+      maxlength="500"
+    ></textarea>
     <button id="send">Envoyer</button>
-  </div>
+  </main>
+
   <script>
     const params = new URLSearchParams(location.search);
     const to = params.get('user');
-    document.getElementById('to').innerText = to;
+    document.getElementById('to').innerText = to || '...';
+
     document.getElementById('send').onclick = async () => {
       const msg = document.getElementById('msg').value.trim();
-      if (!msg) return alert('Message vide');
+      if (!msg) {
+        alert('Le message est vide !');
+        return;
+      }
       const res = await fetch('/api/send', {
         method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ to, message: msg })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ to, message: msg }),
       });
-      const j = await res.json();
-      if (j.success) location.href = 'success.html';
-      else alert('Erreur');
+      const data = await res.json();
+      if (data.success) {
+        location.href = 'success.html';
+      } else {
+        alert('Une erreur est survenue, réessaie.');
+      }
     };
   </script>
 </body>
