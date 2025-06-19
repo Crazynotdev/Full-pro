@@ -18,24 +18,110 @@
     body {
       min-height: 100vh;
       background: linear-gradient(135deg, #1f1c2c, #928dab);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 1rem;
-      overflow: hidden;
       color: #fff;
       user-select: none;
+      overflow-x: hidden;
     }
-    .container {
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      background: rgba(15, 52, 96, 0.85);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      z-index: 1000;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+    header img.logo {
+      height: 38px;
+      cursor: pointer;
+      transition: filter 0.3s ease;
+    }
+    header img.logo:hover {
+      filter: drop-shadow(0 0 8px #ff4c61);
+    }
+
+    /* Burger */
+    .burger {
+      width: 28px;
+      height: 22px;
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      z-index: 1100;
+    }
+    .burger span {
+      display: block;
+      height: 3px;
+      width: 100%;
+      background: #fff;
+      border-radius: 3px;
+      transition: all 0.4s ease;
+      transform-origin: center;
+    }
+    /* Burger animation */
+    .burger.open span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    .burger.open span:nth-child(2) {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    .burger.open span:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
+    nav {
+      position: fixed;
+      top: 60px;
+      right: -270px;
+      width: 270px;
+      height: calc(100vh - 60px);
+      background: rgba(15, 52, 96, 0.95);
+      backdrop-filter: blur(15px);
+      box-shadow: -4px 0 16px rgba(0,0,0,0.3);
+      transition: right 0.4s ease;
+      display: flex;
+      flex-direction: column;
+      padding: 2rem 1.5rem;
+      z-index: 999;
+      border-radius: 0 0 0 25px;
+      overflow-y: auto;
+    }
+    nav.open {
+      right: 0;
+    }
+    nav a {
+      color: #ff4c61;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.25rem;
+      margin-bottom: 1.6rem;
+      transition: color 0.3s ease;
+      user-select: none;
+    }
+    nav a:hover {
+      color: #ff1e39;
+    }
+
+    main.container {
+      margin-top: 100px;
       background: rgba(255 255 255 / 0.1);
       backdrop-filter: blur(15px);
       border-radius: 25px;
       box-shadow: 0 8px 32px rgb(0 0 0 / 0.25);
       max-width: 420px;
-      width: 100%;
+      width: 90%;
       padding: 2.5rem 2rem;
       text-align: center;
       animation: fadeInScale 1s ease forwards;
+      margin-left: auto;
+      margin-right: auto;
     }
     @keyframes fadeInScale {
       0% {
@@ -50,8 +136,8 @@
 
     h1 {
       font-weight: 800;
-      font-size: 2.8rem;
-      margin-bottom: 0.25rem;
+      font-size: 3rem;
+      margin-bottom: 0.3rem;
       letter-spacing: 0.12em;
       text-shadow: 0 0 12px #e94560;
     }
@@ -111,15 +197,6 @@
       transform: scale(0.95);
     }
 
-    footer {
-      margin-top: 2.8rem;
-      font-size: 0.9rem;
-      color: #bbb;
-      letter-spacing: 0.05em;
-      font-weight: 500;
-      user-select: text;
-    }
-
     /* Subtle background animation */
     body::before {
       content: '';
@@ -135,15 +212,22 @@
       opacity: 0.5;
     }
     @keyframes pulse {
-      0% { transform: scale(1) translateX(0); opacity: 0.5; }
-      100% { transform: scale(1.2) translateX(10%); opacity: 0.7; }
+      0% {
+        transform: scale(1) translateX(0);
+        opacity: 0.5;
+      }
+      100% {
+        transform: scale(1.2) translateX(10%);
+        opacity: 0.7;
+      }
     }
 
     @media (max-width: 480px) {
       h1 {
-        font-size: 2rem;
+        font-size: 2.5rem;
       }
-      .container {
+      main.container {
+        margin-top: 80px;
         padding: 2rem 1.5rem;
       }
     }
@@ -151,7 +235,33 @@
 </head>
 
 <body>
-  <div class="container" role="main" aria-label="Création du lien Waz Moi">
+  <header>
+    <img
+      src="https://example.com/ton-logo.png"
+      alt="Logo WAZ MOI"
+      class="logo"
+      onclick="window.location.href='index.html'"
+    />
+    <div class="burger" id="burger" aria-label="Menu" role="button" tabindex="0" aria-expanded="false" aria-controls="navMenu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </header>
+
+  <nav id="navMenu" aria-hidden="true">
+    <a href="mailto:developpeur@example.com" target="_blank" rel="noopener noreferrer" aria-label="Contacter le développeur">
+      📧 Contacter le développeur
+    </a>
+    <a href="https://t.me/tonpseudo" target="_blank" rel="noopener noreferrer" aria-label="Telegram développeur">
+      💬 Telegram
+    </a>
+    <a href="https://github.com/tonpseudo" target="_blank" rel="noopener noreferrer" aria-label="GitHub développeur">
+      🛠 GitHub
+    </a>
+  </nav>
+
+  <main class="container" role="main" aria-label="Création du lien Waz Moi">
     <h1>WAZ MOI</h1>
     <p class="subtitle">Reçois des messages anonymes et funs 🔥</p>
     <input
@@ -166,28 +276,37 @@
     />
     <button id="create" aria-describedby="createDesc">Créer mon lien</button>
     <footer id="createDesc">Ton pseudo sera utilisé pour recevoir des messages anonymes.</footer>
-  </div>
+  </main>
 
   <script>
-    const createBtn = document.getElementById('create');
-    const input = document.getElementById('username');
+    const burger = document.getElementById('burger');
+    const navMenu = document.getElementById('navMenu');
 
-    createBtn.onclick = () => {
-      const val = input.value.trim();
-      if (!val) {
-        alert("Entre un pseudo valide !");
-        input.focus();
+    function toggleMenu() {
+      const expanded = burger.getAttribute('aria-expanded') === 'true' || false;
+      burger.classList.toggle('open');
+      burger.setAttribute('aria-expanded', !expanded);
+      navMenu.classList.toggle('open');
+      navMenu.setAttribute('aria-hidden', expanded);
+    }
+
+    burger.addEventListener('click', toggleMenu);
+    burger.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleMenu();
+      }
+    });
+
+    // Création du lien
+    document.getElementById('create').onclick = () => {
+      const u = document.getElementById('username').value.trim();
+      if (!u) {
+        alert('Entre un pseudo');
         return;
       }
-      // Pseudo sécurisé URL + redirection
-      const encoded = encodeURIComponent(val);
-      window.location.href = `user.html?user=${encoded}`;
+      location.href = `user.html?user=${encodeURIComponent(u)}`;
     };
-
-    // Optional: Enter key triggers createBtn
-    input.addEventListener('keyup', e => {
-      if (e.key === 'Enter') createBtn.click();
-    });
   </script>
 </body>
 </html>
