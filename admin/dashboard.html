@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin WAZ MOI</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <div class="box" id="loginBox">
+    <h2>Connexion Admin</h2>
+    <input id="adminPass" type="password" placeholder="Mot de passe admin" />
+    <button onclick="login()">Se connecter</button>
+  </div>
+
+  <div class="box" id="adminBox" style="display:none;">
+    <h2>📊 Dashboard Admin</h2>
+    <p id="stats"></p>
+    <select id="userList"></select>
+    <ul id="messages"></ul>
+  </div>
+
+  <script>
+    const PASS = "wazsuperadmin2024";
+
+    function login() {
+      const input = document.getElementById('adminPass').value;
+      if (input === PASS) {
+        sessionStorage.setItem('admin', 'ok');
+        showDashboard();
+      } else {
+        alert("Mot de passe incorrect");
+      }
+    }
+
+    function showDashboard() {
+      document.getElementById('loginBox').style.display = 'none';
+      document.getElementById('adminBox').style.display = 'block';
+      fetch('/api/admin').then(r => r.json()).then(data => {
+        document.getElementById('stats').innerText = 
+          `👤 Utilisateurs : ${data.users} • 💬 Messages : ${data.total}`;
+        const select = document.getElementById('userList');
+        data.usernames.forEach(name => {
+          const option = document.createElement('option');
+          option.value = name;
+          option.innerText = name;
+          select.appendChild(option);
+        });
+        select.onchange = async () => {
+          const res = await fetch('/api/get?username=' + select.value);
+          const j = await res.json();
+          const ul = document.getElementById('messages');
+          ul.innerHTML = '';
+          j.messages.forEach(m => {
+            const li = document.createElement('li');
+            li.innerText = `🕒 ${new Date(m.date).toLocaleString()} : ${m.message}`;
+            ul.appendChild(li);
+          });
+        };
+      });
+    }
+
+    if (sessionStorage.getItem('admin') === 'ok') showDashboard();
+  </script>
+</body>
+</html>
