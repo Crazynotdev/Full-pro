@@ -1,17 +1,193 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" >
 <head>
-  <meta charset="UTF-8">
-  <title>WAZ MOI</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WAZ MOI - Reçois des messages anonymes 🔥</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* Reset & base */
+    * {
+      box-sizing: border-box;
+      margin: 0; padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1f1c2c, #928dab);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      overflow: hidden;
+      color: #fff;
+      user-select: none;
+    }
+    .container {
+      background: rgba(255 255 255 / 0.1);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      box-shadow: 0 8px 32px rgb(0 0 0 / 0.25);
+      max-width: 420px;
+      width: 100%;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      animation: fadeInScale 1s ease forwards;
+    }
+    @keyframes fadeInScale {
+      0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    h1 {
+      font-weight: 800;
+      font-size: 2.8rem;
+      margin-bottom: 0.25rem;
+      letter-spacing: 0.12em;
+      text-shadow: 0 0 12px #e94560;
+    }
+    p.subtitle {
+      font-weight: 500;
+      font-size: 1.15rem;
+      color: #ddd;
+      margin-bottom: 2rem;
+      text-shadow: 0 0 6px #b36b7b;
+    }
+
+    input#username {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      font-size: 1.1rem;
+      border-radius: 50px;
+      border: none;
+      background: rgba(255 255 255 / 0.2);
+      color: #fff;
+      outline-offset: 3px;
+      outline-color: #ff4c61;
+      transition: background 0.3s ease;
+      box-shadow: inset 0 0 10px #ff4c61;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-weight: 600;
+    }
+    input#username::placeholder {
+      color: #ffc6c6cc;
+      font-weight: 400;
+    }
+    input#username:focus {
+      background: rgba(255 255 255 / 0.35);
+    }
+
+    button#create {
+      width: 100%;
+      padding: 1.1rem 0;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(90deg, #e94560 0%, #ff5858 100%);
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 14px #ff4c61;
+      transition: all 0.3s ease;
+      letter-spacing: 0.06em;
+      user-select: none;
+    }
+    button#create:hover {
+      background: linear-gradient(90deg, #ff5858 0%, #e94560 100%);
+      box-shadow: 0 6px 20px #ff2e4c;
+      transform: scale(1.05);
+    }
+    button#create:active {
+      transform: scale(0.95);
+    }
+
+    footer {
+      margin-top: 2.8rem;
+      font-size: 0.9rem;
+      color: #bbb;
+      letter-spacing: 0.05em;
+      font-weight: 500;
+      user-select: text;
+    }
+
+    /* Subtle background animation */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -25%;
+      left: -25%;
+      width: 150vw;
+      height: 150vh;
+      background: radial-gradient(circle at center, #ff586e, transparent 70%);
+      animation: pulse 6s ease-in-out infinite alternate;
+      z-index: -1;
+      filter: blur(110px);
+      opacity: 0.5;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1) translateX(0); opacity: 0.5; }
+      100% { transform: scale(1.2) translateX(10%); opacity: 0.7; }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2rem;
+      }
+      .container {
+        padding: 2rem 1.5rem;
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <div class="box">
-    <h1>💌 WAZ MOI</h1>
-    <p>Reçois des messages anonymes</p>
-    <input id="username" placeholder="Ton pseudo" />
-    <button id="create">Créer mon lien</button>
+  <div class="container" role="main" aria-label="Création du lien Waz Moi">
+    <h1>WAZ MOI</h1>
+    <p class="subtitle">Reçois des messages anonymes et funs 🔥</p>
+    <input
+      id="username"
+      type="text"
+      placeholder="Choisis ton pseudo unique..."
+      aria-label="Nom d'utilisateur"
+      autocomplete="off"
+      spellcheck="false"
+      maxlength="25"
+      required
+    />
+    <button id="create" aria-describedby="createDesc">Créer mon lien</button>
+    <footer id="createDesc">Ton pseudo sera utilisé pour recevoir des messages anonymes.</footer>
   </div>
-  <script src="main.js"></script>
+
+  <script>
+    const createBtn = document.getElementById('create');
+    const input = document.getElementById('username');
+
+    createBtn.onclick = () => {
+      const val = input.value.trim();
+      if (!val) {
+        alert("Entre un pseudo valide !");
+        input.focus();
+        return;
+      }
+      // Pseudo sécurisé URL + redirection
+      const encoded = encodeURIComponent(val);
+      window.location.href = `user.html?user=${encoded}`;
+    };
+
+    // Optional: Enter key triggers createBtn
+    input.addEventListener('keyup', e => {
+      if (e.key === 'Enter') createBtn.click();
+    });
+  </script>
 </body>
 </html>
